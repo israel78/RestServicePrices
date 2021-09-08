@@ -1,6 +1,6 @@
-package es.overon.poc.notes.service;
+package es.beonit.prices.service;
 
-import es.overon.poc.notes.domain.Note;
+import es.beonit.prices.domain.Note;
 
 import java.util.List;
 

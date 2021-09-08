@@ -1,9 +1,9 @@
-package es.overon.poc.notes.service;
+package es.beonit.prices.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import es.overon.poc.notes.domain.Note;
-import es.overon.poc.notes.repository.Dao;
+import es.beonit.prices.repository.Dao;
+import es.beonit.prices.domain.Note;
 import org.springframework.beans.factory.annotation.Autowired;
 
 

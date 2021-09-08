@@ -1,15 +1,13 @@
-package es.overon.poc.notes.repository;
+package es.beonit.prices.repository;
 import java.util.List;
 
 import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
 import javax.persistence.PersistenceContext;
-import javax.persistence.PersistenceUnit;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.transaction.Transactional;
 
-import es.overon.poc.notes.domain.Note;
-import es.overon.poc.notes.domain.User;
+import es.beonit.prices.domain.Note;
+import es.beonit.prices.domain.User;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 

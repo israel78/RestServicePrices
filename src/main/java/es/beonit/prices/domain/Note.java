@@ -1,10 +1,9 @@
-package es.overon.poc.notes.domain;
+package es.beonit.prices.domain;
 
 import lombok.Data;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.List;
 
 @Data
 @Entity

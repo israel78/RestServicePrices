@@ -1,7 +1,7 @@
-package es.overon.poc.notes.repository;
+package es.beonit.prices.repository;
 
-import es.overon.poc.notes.domain.Note;
-import es.overon.poc.notes.domain.User;
+import es.beonit.prices.domain.Note;
+import es.beonit.prices.domain.User;
 
 import java.util.List;
 

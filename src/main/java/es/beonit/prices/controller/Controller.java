@@ -1,10 +1,10 @@
-package es.overon.poc.notes.controller;
+package es.beonit.prices.controller;
 
 import java.security.SecureRandom;
 import java.util.*;
 
-import es.overon.poc.notes.domain.Note;
-import es.overon.poc.notes.service.Service;
+import es.beonit.prices.domain.Note;
+import es.beonit.prices.service.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.http.HttpStatus;
