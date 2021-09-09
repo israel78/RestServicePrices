@@ -18,7 +18,6 @@ import javax.servlet.http.HttpSession;
 @Scope("application")
 public class Controller {
 
-    private String token;
     @Autowired
     private Service userService;
 
@@ -32,7 +31,7 @@ public class Controller {
             HttpSession session
     ) {
         List<Note> noteList = new ArrayList<Note>();
-        if(this.token!=null&&this.token.equals(token)) {
+        if(token!=null&&token.equals(session.getAttribute("Token"))) {
             noteList = userService.getNotesByUserId(userId);
             return new ResponseEntity<List<Note>> (noteList, HttpStatus.OK);
         }else{
@@ -49,7 +48,6 @@ public class Controller {
             result.put("Token", token);
             result.put("id",userService.getUserId(userName));
             session.setAttribute("Token",token);
-            this.token = token;
            return new ResponseEntity<Map<String, String>>(result, HttpStatus.OK);
        } else {
             result.put("Token", "Not authorized");
@@ -63,7 +61,7 @@ public class Controller {
             HttpSession session
     ) {
         Map<String, String> result = new <String, String>HashMap();
-        if(this.token!=null&&this.token.equals(token)){
+        if(token!=null&&token.equals(session.getAttribute("Token"))){
             result.put("noteId",String.valueOf(userService.saveNote(note)));
             return new ResponseEntity<Map<String, String>> (result, HttpStatus.OK);
         }else{
@@ -78,7 +76,7 @@ public class Controller {
             HttpSession session
     ) {
         Map<String, String> result = new <String, String>HashMap();
-        if(this.token!=null&&this.token.equals(token)){
+        if(token!=null&&token.equals(session.getAttribute("Token"))){
             result.put("noteId",String.valueOf(userService.updateNote(note)));
             return new ResponseEntity<Map<String, String>> (result, HttpStatus.OK);
         }else{
@@ -93,7 +91,7 @@ public class Controller {
             HttpSession session
     ) {
         Map<String, String> result = new <String, Integer>HashMap();
-        if(this.token!=null&&this.token.equals(token)) {
+        if(token!=null&&token.equals(session.getAttribute("Token"))) {
             Note note =  userService.getNotesById(noteId);
             result.put("noteId",String.valueOf(userService.deleteNote(note)));
             return new ResponseEntity<Map<String, String>> (result, HttpStatus.OK);
