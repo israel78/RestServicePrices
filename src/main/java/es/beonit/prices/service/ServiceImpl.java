@@ -2,8 +2,8 @@ package es.beonit.prices.service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import es.beonit.prices.domain.Prices;
 import es.beonit.prices.repository.Dao;
-import es.beonit.prices.domain.Note;
 import org.springframework.beans.factory.annotation.Autowired;
 
 
@@ -13,24 +13,25 @@ public class ServiceImpl implements Service {
     @Autowired
     private Dao dao;
 
-    public List<Note> getNotesByUserId(int userId) {
-        return dao.getNotes().stream().filter(n -> n.getUser().getId() == userId).collect(Collectors.toList());
+    public List<Prices> getNotesByUserId() {
+        return dao.getNotes();
     }
+
     public boolean login(String userName, String pass) {
         return null != dao.getUsers().stream()
                 .filter(u -> u.getFirstName().equals(userName))
                 .filter(u -> u.getPassw().equals(pass)).findAny().orElse(null);
     }
-    public Note getNotesById(int noteId){
-        return dao.getNotes().stream().filter(n -> n.getId() == noteId).findFirst().get();
+    public Prices getNotesById(int noteId){
+        return (Prices) dao.getNotes();
     }
-    public int updateNote(Note note) {
+    public int updateNote(Prices note) {
         return dao.updateNote(note);
     }
-    public int saveNote(Note note){
+    public int saveNote(Prices note){
       return  dao.saveNote(note);
     };
-    public int deleteNote(Note note){
+    public int deleteNote(Prices note){
         return dao.deleteNote(note);
     }
     public String getUserId(String userName) {

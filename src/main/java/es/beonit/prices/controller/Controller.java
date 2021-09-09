@@ -3,7 +3,7 @@ package es.beonit.prices.controller;
 import java.security.SecureRandom;
 import java.util.*;
 
-import es.beonit.prices.domain.Note;
+import es.beonit.prices.domain.Prices;
 import es.beonit.prices.service.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -25,17 +25,17 @@ public class Controller {
     private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder(); //threadsafe
 
     @RequestMapping  (value = "/noteslist")
-    public  ResponseEntity<List<Note>> getNotesByUserId(
+    public  ResponseEntity<List<Prices>> getNotesByUserId(
             @RequestHeader(name = "Authorization") String token,
             @RequestParam(value = "userId") int userId,
             HttpSession session
     ) {
-        List<Note> noteList = new ArrayList<Note>();
+        List<Prices> noteList = new ArrayList<Prices>();
         if(token!=null&&token.equals(session.getAttribute("Token"))) {
-            noteList = userService.getNotesByUserId(userId);
-            return new ResponseEntity<List<Note>> (noteList, HttpStatus.OK);
+            noteList = userService.getNotesByUserId();
+            return new ResponseEntity<List<Prices>> (noteList, HttpStatus.OK);
         }else{
-           return new ResponseEntity<List<Note>> (noteList, HttpStatus.UNAUTHORIZED);
+           return new ResponseEntity<List<Prices>> (noteList, HttpStatus.UNAUTHORIZED);
         }
     }
     @RequestMapping  (value = "/login", produces = "application/json")
@@ -57,7 +57,7 @@ public class Controller {
     @RequestMapping  (value = "/save")
     public  ResponseEntity<Map<String, String>> saveOrUpdateNote(
             @RequestHeader(name = "Authorization") String token,
-            @RequestBody Note note,
+            @RequestBody Prices note,
             HttpSession session
     ) {
         Map<String, String> result = new <String, String>HashMap();
@@ -72,7 +72,7 @@ public class Controller {
     @RequestMapping  (value = "/update")
     public  ResponseEntity<Map<String, String>> updateNote(
             @RequestHeader(name = "Authorization") String token,
-            @RequestBody Note note,
+            @RequestBody Prices note,
             HttpSession session
     ) {
         Map<String, String> result = new <String, String>HashMap();
@@ -92,7 +92,7 @@ public class Controller {
     ) {
         Map<String, String> result = new <String, Integer>HashMap();
         if(token!=null&&token.equals(session.getAttribute("Token"))) {
-            Note note =  userService.getNotesById(noteId);
+            Prices note =  userService.getNotesById(noteId);
             result.put("noteId",String.valueOf(userService.deleteNote(note)));
             return new ResponseEntity<Map<String, String>> (result, HttpStatus.OK);
         }else{
