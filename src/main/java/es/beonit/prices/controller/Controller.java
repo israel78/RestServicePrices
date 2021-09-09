@@ -1,6 +1,9 @@
 package es.beonit.prices.controller;
 
 import java.security.SecureRandom;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 import es.beonit.prices.domain.Prices;
@@ -24,18 +27,22 @@ public class Controller {
     private static final SecureRandom secureRandom = new SecureRandom(); //threadsafe
     private static final Base64.Encoder base64Encoder = Base64.getUrlEncoder(); //threadsafe
 
-    @RequestMapping  (value = "/noteslist")
-    public  ResponseEntity<List<Prices>> getNotesByUserId(
+    @RequestMapping  (value = "/getPriceApply")
+    public  ResponseEntity <Prices> getPriceResponse(
             @RequestHeader(name = "Authorization") String token,
-            @RequestParam(value = "userId") int userId,
+            @RequestParam (name = "DateApply") String dateApply,
+            @RequestParam (name = "productId") int productId,
+            @RequestParam (name = "brandId") int brandId,
             HttpSession session
-    ) {
-        List<Prices> noteList = new ArrayList<Prices>();
+    ) throws ParseException {
+        Prices priceResponse = new Prices();
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH.mm.ss");
+        Date date = formatter.parse(dateApply);
         if(token!=null&&token.equals(session.getAttribute("Token"))) {
-            noteList = userService.getNotesByUserId();
-            return new ResponseEntity<List<Prices>> (noteList, HttpStatus.OK);
+            priceResponse = (Prices) userService.getPriceResponse(date,productId,brandId);
+            return new ResponseEntity <Prices> (priceResponse, HttpStatus.OK);
         }else{
-           return new ResponseEntity<List<Prices>> (noteList, HttpStatus.UNAUTHORIZED);
+           return new ResponseEntity <Prices> (priceResponse, HttpStatus.UNAUTHORIZED);
         }
     }
     @RequestMapping  (value = "/login", produces = "application/json")
@@ -54,52 +61,6 @@ public class Controller {
            return new ResponseEntity<Map<String, String>>(result, HttpStatus.UNAUTHORIZED);
         }
        }
-    @RequestMapping  (value = "/save")
-    public  ResponseEntity<Map<String, String>> saveOrUpdateNote(
-            @RequestHeader(name = "Authorization") String token,
-            @RequestBody Prices note,
-            HttpSession session
-    ) {
-        Map<String, String> result = new <String, String>HashMap();
-        if(token!=null&&token.equals(session.getAttribute("Token"))){
-            result.put("noteId",String.valueOf(userService.saveNote(note)));
-            return new ResponseEntity<Map<String, String>> (result, HttpStatus.OK);
-        }else{
-            result.put("Token", "Not authorized");
-            return new ResponseEntity<Map<String, String>> (result, HttpStatus.UNAUTHORIZED);
-        }
-    }
-    @RequestMapping  (value = "/update")
-    public  ResponseEntity<Map<String, String>> updateNote(
-            @RequestHeader(name = "Authorization") String token,
-            @RequestBody Prices note,
-            HttpSession session
-    ) {
-        Map<String, String> result = new <String, String>HashMap();
-        if(token!=null&&token.equals(session.getAttribute("Token"))){
-            result.put("noteId",String.valueOf(userService.updateNote(note)));
-            return new ResponseEntity<Map<String, String>> (result, HttpStatus.OK);
-        }else{
-            result.put("Token", "Not authorized");
-            return new ResponseEntity<Map<String, String>> (result, HttpStatus.UNAUTHORIZED);
-        }
-    }
-    @RequestMapping  (value = "/delete")
-    public  ResponseEntity<Map<String, String>> deleteNote(
-            @RequestHeader(name = "Authorization") String token,
-            @RequestParam int noteId,
-            HttpSession session
-    ) {
-        Map<String, String> result = new <String, Integer>HashMap();
-        if(token!=null&&token.equals(session.getAttribute("Token"))) {
-            Prices note =  userService.getNotesById(noteId);
-            result.put("noteId",String.valueOf(userService.deleteNote(note)));
-            return new ResponseEntity<Map<String, String>> (result, HttpStatus.OK);
-        }else{
-            result.put("Token", "Not authorized");
-            return new ResponseEntity<Map<String, String>> (result, HttpStatus.UNAUTHORIZED);
-        }
-    }
 
     public static String generateNewToken() {
         byte[] randomBytes = new byte[24];

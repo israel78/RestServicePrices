@@ -1,14 +1,19 @@
 package es.beonit.prices.repository;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 import  java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TemporalType;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.transaction.Transactional;
+import javax.persistence.criteria.ParameterExpression;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import es.beonit.prices.domain.Prices;
 import es.beonit.prices.domain.User;
-import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
 
@@ -19,32 +24,33 @@ public class DaoImpl implements Dao {
     @PersistenceContext
     private EntityManager em;
 
-    public List<Prices> getNotes() {
+    public Prices getPriceResponse(Date dateApply, int productId, int brandId) {
         CriteriaQuery<Prices> criteriaQuery = em.getCriteriaBuilder().createQuery(Prices.class);
-        criteriaQuery.select(criteriaQuery.from(Prices.class));
-        return em.createQuery(criteriaQuery).getResultList();
+        Root root = criteriaQuery.from(Prices.class);
+        List<Predicate> conditionsList = new ArrayList<Predicate>();
+        Predicate predicateProductId
+                = em.getCriteriaBuilder().equal(root.get("productId"), productId);
+        ParameterExpression<Date> d = em.getCriteriaBuilder().parameter(Date.class);
+        Predicate predicateDateApply
+                = em.getCriteriaBuilder().between(d,
+                root.<Date>get("startDate"),
+                root.<Date>get("endDate"));
+        Predicate predicateDateApply2
+                = em.getCriteriaBuilder().lessThan(root.get("endDate"),dateApply);
+        Predicate predicateBrandId
+                = em.getCriteriaBuilder().equal(root.get("brandId"), brandId);
+        conditionsList.add(predicateProductId);
+        conditionsList.add(predicateDateApply);
+        //conditionsList.add(predicateDateApply2);
+        conditionsList.add(predicateBrandId);
+        criteriaQuery.select(root).where(conditionsList.toArray(new Predicate[]{}));
+        return em.createQuery(criteriaQuery).setParameter(d, dateApply, TemporalType.DATE).getResultList()
+                .stream().max(Comparator.comparing(Prices::getPriority))
+                .orElse(new Prices());
     }
     public List<User> getUsers() {
         CriteriaQuery<User> criteriaQuery = em.getCriteriaBuilder().createQuery(User.class);
         criteriaQuery.select(criteriaQuery.from(User.class));
         return em.createQuery(criteriaQuery).getResultList();
-    }
-    @Transactional
-    public int saveNote(Prices note) {
-        Session ses = em.unwrap(Session.class);
-        ses.save(note);
-        return note.getId();
-    }
-    @Transactional
-    public int updateNote(Prices note) {
-        Session ses = em.unwrap(Session.class);
-        ses.update(note);
-        return note.getId();
-    }
-    @Transactional
-    public int deleteNote(Prices note) {
-        Session ses = em.unwrap(Session.class);
-        ses.delete(note);
-        return 0;
     }
 }

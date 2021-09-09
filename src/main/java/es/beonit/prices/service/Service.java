@@ -3,15 +3,12 @@ package es.beonit.prices.service;
 
 import es.beonit.prices.domain.Prices;
 
-import java.util.List;
+import java.util.Date;
 
 public interface Service {
 
-    public List<Prices> getNotesByUserId();
+    public Prices getPriceResponse(Date dateApply, int productId, int brandId);
     public boolean login(String userName, String pass);
     public String getUserId(String userName);
-    public int saveNote(Prices note);
-    public int deleteNote(Prices note);
-    public Prices getNotesById(int noteId);
-    public int updateNote(Prices note);
+
 }

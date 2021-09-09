@@ -13,7 +13,7 @@ public class Prices {
     @Column(name = "ID")
     private int id;
     @Column(name = "brand_id")
-    private int brand_id;
+    private int brandId;
     @Column(name = "start_date")
     private Date startDate;
     @Column(name = "end_date")
