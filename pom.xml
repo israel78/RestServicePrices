@@ -8,11 +8,11 @@
 		<version>2.5.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>es.overon.poc</groupId>
-	<artifactId>notes-back</artifactId>
+	<groupId>es.beonit.prices</groupId>
+	<artifactId>prices-back</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>notes</name>
-	<description>Poc Notes</description>
+	<name>prices</name>
+	<description>Prices</description>
 	<properties>
 		<java.version>1.8</java.version>
 	</properties>
@@ -53,6 +53,19 @@
 			<artifactId>h2</artifactId>
 			<version>1.4.200</version>
 		</dependency>
+		<dependency>
+			<groupId>io.rest-assured</groupId>
+			<artifactId>rest-assured</artifactId>
+			<version>4.4.0</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<plugins>

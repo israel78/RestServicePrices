@@ -1,4 +1,4 @@
-package es.overon.poc.notes.domain;
+package es.beonit.prices.domain;
 
 import lombok.Data;
 
