@@ -30,21 +30,19 @@ public class DaoImpl implements Dao {
         List<Predicate> conditionsList = new ArrayList<Predicate>();
         Predicate predicateProductId
                 = em.getCriteriaBuilder().equal(root.get("productId"), productId);
-        ParameterExpression<Date> d = em.getCriteriaBuilder().parameter(Date.class);
         Predicate predicateDateApply
-                = em.getCriteriaBuilder().between(d,
-                root.<Date>get("startDate"),
-                root.<Date>get("endDate"));
-        Predicate predicateDateApply2
-                = em.getCriteriaBuilder().lessThan(root.get("endDate"),dateApply);
+                = em.getCriteriaBuilder().between(em.getCriteriaBuilder().literal(dateApply),root.<Date>get("startDate"),root.<Date>get("endDate"));
+
+/*        Predicate predicateDateApply2
+                = em.getCriteriaBuilder().greaterThanOrEqualTo((Date)root.<Date>get("endDate"),(Date)dateApply);*/
         Predicate predicateBrandId
                 = em.getCriteriaBuilder().equal(root.get("brandId"), brandId);
         conditionsList.add(predicateProductId);
         conditionsList.add(predicateDateApply);
-        //conditionsList.add(predicateDateApply2);
+       // conditionsList.add(predicateDateApply2);
         conditionsList.add(predicateBrandId);
         criteriaQuery.select(root).where(conditionsList.toArray(new Predicate[]{}));
-        return em.createQuery(criteriaQuery).setParameter(d, dateApply, TemporalType.DATE).getResultList()
+        return em.createQuery(criteriaQuery).getResultList()
                 .stream().max(Comparator.comparing(Prices::getPriority))
                 .orElse(new Prices());
     }
