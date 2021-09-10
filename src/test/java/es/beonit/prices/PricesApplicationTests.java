@@ -36,22 +36,23 @@ class PricesApplicationTests {
 		port = 7000;
 	}
 	@Test
-	void Login(){
+	String Login(){
 		ResponseBody r =  given().header("user", "antonio")
 				.header("pass", "antonio")
 				.when().get("/login").then()
 				.extract().response().getBody();
 		String bodyAsString = r.asString();
 		Assertions.assertTrue(bodyAsString.contains("Token"));
-
+	return r.jsonPath().getString("Token");
 
 	}
 	@Test
 	void getPriceResponse() {
-		ResponseBody r = given().header("user", "antonio")
-				.header("pass", "antonio")
-				.when().get("/login").then()
+		ResponseBody pricesResponse = given().header("Authorization",Login())
+				.when().get("/getPriceApply?DateApply=2020-06-14 13.30.00&productId=35455&brandId=1").then()
 				.extract().response().getBody();
-		String token = r.jsonPath().getString("Token");
+		String ProductId = pricesResponse.jsonPath().getString("productId");
+
+
 	}
 }

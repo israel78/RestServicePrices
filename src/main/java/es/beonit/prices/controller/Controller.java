@@ -65,6 +65,6 @@ public class Controller {
     public static String generateNewToken() {
         byte[] randomBytes = new byte[24];
         secureRandom.nextBytes(randomBytes);
-        return "Bearer "+base64Encoder.encodeToString(randomBytes);
+        return base64Encoder.encodeToString(randomBytes);
     }
 }
