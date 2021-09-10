@@ -1,5 +1,6 @@
 package es.beonit.prices.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -15,8 +16,10 @@ public class Prices {
     @Column(name = "brand_id")
     private int brandId;
     @Column(name = "start_date")
+    @JsonFormat(timezone = "Europe/Paris", pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private Date startDate;
     @Column(name = "end_date")
+    @JsonFormat(timezone = "Europe/Paris", pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private Date endDate;
     @Column(name = "price_list")
     private int priceList;

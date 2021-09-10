@@ -32,14 +32,10 @@ public class DaoImpl implements Dao {
                 = em.getCriteriaBuilder().equal(root.get("productId"), productId);
         Predicate predicateDateApply
                 = em.getCriteriaBuilder().between(em.getCriteriaBuilder().literal(dateApply),root.<Date>get("startDate"),root.<Date>get("endDate"));
-
-/*        Predicate predicateDateApply2
-                = em.getCriteriaBuilder().greaterThanOrEqualTo((Date)root.<Date>get("endDate"),(Date)dateApply);*/
         Predicate predicateBrandId
                 = em.getCriteriaBuilder().equal(root.get("brandId"), brandId);
         conditionsList.add(predicateProductId);
         conditionsList.add(predicateDateApply);
-       // conditionsList.add(predicateDateApply2);
         conditionsList.add(predicateBrandId);
         criteriaQuery.select(root).where(conditionsList.toArray(new Predicate[]{}));
         return em.createQuery(criteriaQuery).getResultList()
