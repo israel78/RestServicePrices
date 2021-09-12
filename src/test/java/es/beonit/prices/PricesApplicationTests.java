@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
 import static io.restassured.RestAssured.*;
 
@@ -29,6 +30,12 @@ class PricesApplicationTests {
 	private static final String END_DATE_EXPECTED = "2020-06-14T15:00:00.000+0200";
 	private static final String FINAL_PRICE = "25.45";
 
+	//Valor entregado cuando la consulta no tiene resultados
+	private static final String PRODUCT_ID_EMPTY_EXPECTED = "0" ;
+	//Valor de fecha no exitente en el intervalo entre fecha de inicio y fecha fin
+	private static final String DATE_APPLY_NOT_RESULT_EXPECTED = "2021-06-18 13.30.00";
+
+
 	@LocalServerPort
 	private int port;
 
@@ -36,6 +43,19 @@ class PricesApplicationTests {
 	public static void setup() {
 		baseURI = "http://localhost";
 	}
+
+	@Test
+	void notLogin(){
+		Response r =  given().port(port).header("user", "paula")
+				.header("pass", "paula")
+				.when().get("/login").then()
+				.extract().response();
+
+		int requestStatus = r.getStatusCode();
+		Assertions.assertTrue(requestStatus == HttpStatus.UNAUTHORIZED.value());
+	}
+
+	//LLamada correcta con datos para devolver resultado esperado
 	@Test
 	void getPriceResponse() {
 		//La aplicación maneja sesiones y usuarios para logarse, y hacer consultas mediante token de acceso
@@ -48,7 +68,7 @@ class PricesApplicationTests {
 		Assertions.assertTrue(bodyAsString.contains("Token"));
 		String sessionId = r.getCookie("JSESSIONID");
 
-		 r.jsonPath().getString("Token");
+		r.jsonPath().getString("Token");
 		ResponseBody pricesResponse = given()
 				.port(port).cookie("JSESSIONID", sessionId)
 				.header("Authorization", r.jsonPath().getString("Token"))
@@ -61,5 +81,27 @@ class PricesApplicationTests {
 		Assertions.assertEquals(pricesResponse.jsonPath().getString("startDate"),START_DATE_EXPECTED);
 		Assertions.assertEquals(pricesResponse.jsonPath().getString("endDate"),END_DATE_EXPECTED);
 		Assertions.assertEquals(pricesResponse.jsonPath().getString("price"),FINAL_PRICE);
+	}
+	//Consulta sin datos
+	@Test
+	void getEmptyPriceResponse() {
+		//La aplicación maneja sesiones y usuarios para logarse, y hacer consultas mediante token de acceso
+		//despues del login
+		Response r =  given().port(port).header("user", "pedro")
+				.header("pass", "pedro")
+				.when().get("/login").then()
+				.extract().response();
+		String bodyAsString = r.getBody().asString();
+		Assertions.assertTrue(bodyAsString.contains("Token"));
+		String sessionId = r.getCookie("JSESSIONID");
+
+		r.jsonPath().getString("Token");
+		ResponseBody pricesResponse = given()
+				.port(port).cookie("JSESSIONID", sessionId)
+				.header("Authorization", r.jsonPath().getString("Token"))
+				.when().get("/getPriceApply?DateApply="+DATE_APPLY_NOT_RESULT_EXPECTED+"&productId="+PRODUCT_ID+"&brandId="+BRAND_ID).then()
+				.extract().response().getBody();
+
+		Assertions.assertEquals(pricesResponse.jsonPath().getString("productId"),PRODUCT_ID_EMPTY_EXPECTED);
 	}
 }
